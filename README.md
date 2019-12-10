@@ -3,7 +3,7 @@ Sample app with MediaBrowserService that contains a memory leak
 Created MediaPlaybackService and MainActivity. 
 I have added leak canary and added AppWatcher.objectWatcher.watch(this) in the onDestroy method. 
 When opening and exiting the app, leak canary finds a leak:
-
+```
 6153 bytes retained
     ┬
     ├─ android.service.media.MediaBrowserService$ServiceBinder
@@ -22,6 +22,7 @@ When opening and exiting the app, leak canary finds a leak:
     ​     key = 11f40383-1498-4743-9f20-208cbd2839a1
     ​     watchDurationMillis = 5191
     ​     retainedDurationMillis = 183
+    
 
 Please include this in bug reports and Stack Overflow questions.
 
