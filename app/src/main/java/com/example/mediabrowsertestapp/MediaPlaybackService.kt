@@ -1,49 +1,28 @@
 package com.example.mediabrowsertestapp
 
+import android.annotation.SuppressLint
+import android.media.browse.MediaBrowser
 import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import androidx.media.MediaBrowserServiceCompat
+import android.service.media.MediaBrowserService
 import leakcanary.AppWatcher
 
-private const val LOG_TAG = "MediaPlaybackService"
+@SuppressLint("NewApi")
+class MediaPlaybackService : MediaBrowserService() {
 
-class MediaPlaybackService : MediaBrowserServiceCompat() {
-
-    private var mediaSession: MediaSessionCompat? = null
-    private lateinit var stateBuilder: PlaybackStateCompat.Builder
-
-    override fun onCreate() {
-        super.onCreate()
-        mediaSession = MediaSessionCompat(baseContext, LOG_TAG).apply {
-            setFlags(
-                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
-                        or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
-            )
-            stateBuilder = PlaybackStateCompat.Builder()
-                .setActions(
-                    PlaybackStateCompat.ACTION_PLAY
-                            or PlaybackStateCompat.ACTION_PLAY_PAUSE
-                )
-            setPlaybackState(stateBuilder.build())
-            setSessionToken(sessionToken)
-        }
+    override fun onLoadChildren(
+        parentId: String,
+        result: Result<MutableList<MediaBrowser.MediaItem>>
+    ) {
+        result.sendResult(mutableListOf())
     }
 
     override fun onGetRoot(
         clientPackageName: String, clientUid: Int,
         rootHints: Bundle?
     ): BrowserRoot? {
-        return BrowserRoot(LOG_TAG, null)
+        return BrowserRoot("MediaPlaybackService", null)
     }
 
-    override fun onLoadChildren(
-        parentMediaId: String,
-        result: Result<List<MediaBrowserCompat.MediaItem>>
-    ) {
-        result.sendResult(emptyList())
-    }
 
     override fun onDestroy() {
         super.onDestroy()
